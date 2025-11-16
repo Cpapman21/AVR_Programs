@@ -1,0 +1,159 @@
+#define F_CPU 1000000UL      // ATtiny45 internal 8 MHz oscillator
+#include <avr/io.h>
+#include <util/delay.h>
+#include <xc.h>
+
+const int GPIOS = 4;
+char row , collum;
+char LTable[4][3][2];
+
+
+ 
+void Table_Config(char P1 , char P2 , char P3 ,char P4) {
+        char temp[4][3][2] = {
+        {{P1,P4},{P1,P3},{P1,P2}},
+        {{P2,P4},{P2,P3},{P2,P1}},  
+        {{P3,P4},{P3,P2},{P3,P1}},
+        {{P4,P3},{P4,P2},{P4,P1}}
+    };
+    
+        for(char x = 0 ; x < 4 ; x++){
+            for(char y = 0; y<3 ; y++){
+                for(char z = 0; z<2 ; z++){
+                    LTable[x][y][z]= temp[x][y][z];
+                }
+            }
+        }
+};
+
+void Set(char Input[1][2]){
+    switch(Input[0][0]){
+        case PB0 :
+            DDRB |= (1<<PB0);
+            PORTB |= (1<<PB0);
+            break;
+        case PB1 :
+            DDRB |= (1<<PB1);
+            PORTB |= (1<<PB1);
+            break;
+        case PB2 :
+            DDRB |= (1<<PB2);
+            PORTB |= (1<<PB2);
+            break;
+        case PB3 :
+            DDRB |= (1<<PB3);
+            PORTB |= (1<<PB3);
+            break;
+        case PB4 :
+            DDRB |= (1<<PB4);
+            PORTB |= (1<<PB4);
+            break;
+         case PB5 :
+            DDRB |= (1<<PB5);
+            PORTB |= (1<<PB5);
+            break;  
+    }; 
+    
+    switch(Input[0][1]){
+        case PB0 :
+            DDRB |= (1<<PB0);
+            PORTB |= (0<<PB0);
+            break;
+        case PB1 :
+            DDRB |= (1<<PB1);
+            PORTB |= (0<<PB1);
+            break;
+        case PB2 :
+            DDRB |= (1<<PB2);
+            PORTB |= (0<<PB2);
+            break;
+        case PB3 :
+            DDRB |= (1<<PB3);
+            PORTB |= (0<<PB3);
+            break;
+        case PB4 :
+            DDRB |= (1<<PB4);
+            PORTB |= (0<<PB4);
+            break;
+         case PB5 :
+            DDRB |= (1<<PB5);
+            PORTB |= (0<<PB5);
+            break;  
+    };
+}; 
+
+void Reset(char Input[1][2]){
+    switch(Input[0][0]){
+        case PB0 :
+            DDRB &= (1<<PB0);
+            PORTB &= (0<<PB0);
+            break;
+        case PB1 :
+            DDRB &= (1<<PB1);
+            PORTB &= (0<<PB1);
+            break;
+        case PB2 :
+            DDRB &= (1<<PB2);
+            PORTB &= (0<<PB2);
+            break;
+        case PB3 :
+            DDRB &= (1<<PB3);
+            PORTB &= (0<<PB3);
+            break;
+        case PB4 :
+            DDRB &= (1<<PB4);
+            PORTB &= (0<<PB4);
+            break;
+         case PB5 :
+            DDRB &= (1<<PB5);
+            PORTB &= (0<<PB5);
+            break;  
+    }; 
+    
+    switch(Input[0][1]){
+        case PB0 :
+            DDRB &= (0<<PB0);
+            PORTB &= (0<<PB0);
+            break;
+        case PB1 :
+            DDRB &= (0<<PB1);
+            PORTB &= (0<<PB1);
+            break;
+        case PB2 :
+            DDRB &= (0<<PB2);
+            PORTB &= (0<<PB2);
+            break;
+        case PB3 :
+            DDRB &= (0<<PB3);
+            PORTB &= (0<<PB3);
+            break;
+        case PB4 :
+            DDRB &= (0<<PB4);
+            PORTB &= (0<<PB4);
+            break;
+         case PB5 :
+            DDRB &= (0<<PB5);
+            PORTB &= (0<<PB5);
+            break;  
+    };
+};
+
+int main(void)
+{
+    // Use PB0 (pin 5) as output
+    
+    DDRB = 0x00;
+    Table_Config(PB4,PB3,PB0,PB1);
+    
+    while(1) {
+        for(char x =0 ; x <4 ; x++){
+            for(char y = 0 ; y <3; y++){
+                Set(LTable[x][y]);
+                _delay_ms(10);
+                Reset(LTable[x][y]);
+                _delay_ms(10);
+            }
+        }         
+    };
+  
+}
