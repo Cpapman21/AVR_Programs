@@ -1,0 +1,35 @@
+#define F_CPU 1000000UL      // ATtiny45 internal 8 MHz oscillator
+#include <avr/io.h>
+#include <util/delay.h>
+#include <xc.h>
+
+void Delay(){
+      // Make sure Timer1 is off
+    TCNT0 = 0x01;
+    
+    TCCR0A = 0x00;
+    TCCR0B = 0x04 ;
+        
+
+    // Clear pending overflow flag
+  
+    while((TIFR&0x2) == 0); // While Overflow flag not set
+    TIFR = 0x02;  // Set Over flow bit back to 1
+
+};
+
+
+int main(void)
+{
+    // Use PB0 (pin 5) as output
+    
+    DDRB = 0xFF;
+    Delay();
+    PORTB ^= (1<<PB1);
+    Delay();
+    while(1){
+        PORTB ^= (1<<PB1);
+        Delay();  
+    }
+
+}
