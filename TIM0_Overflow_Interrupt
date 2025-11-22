@@ -1,0 +1,24 @@
+#define F_CPU 1000000UL      // ATtiny45 internal 8 MHz oscillator
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <xc.h>
+
+
+
+ISR (TIMER0_OVF_vect){
+    PORTB ^= (1<<PB0);
+};
+
+int main(void)
+{
+    // Use PB0 (pin 5) as output
+    
+    DDRB = 0xFF;
+    TCNT0 = 0x00;   
+    TCCR0A = 0x00; // Normal Mode
+    TCCR0B = 0x05; // Pre Scalar 1024
+    sei();
+    TIMSK |= (1<<TOIE0);
+    while(1){};      
+}
